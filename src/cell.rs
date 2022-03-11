@@ -84,6 +84,13 @@ impl Cell {
         self.column == (GRID_COLUMNS - 1)
     }
 
+    // pub(crate) fn has_index(&self, index: Option<usize>) -> bool {
+    //     match index {
+    //         Some(index) => self.index == index,
+    //         None => false,
+    //     }
+    // }
+
     pub(crate) fn remove_option_if_available(&mut self, value: usize) {
         if self.options[value] && self.todo_count > 0 {
             self.options[value] = false;
@@ -91,6 +98,7 @@ impl Cell {
         }
     }
 
+    /// Determines whether there is only one option left and return that as the value
     pub(crate) fn solution(&self) -> Option<usize> {
         if self.todo_count == 1 {
             self.options
@@ -103,7 +111,7 @@ impl Cell {
     }
 
     pub(crate) fn choose(&mut self, value: usize) {
-        self.options[value] = false;
+        self.options.iter_mut().for_each(|o| *o = false);
         self.value = Some(value);
         self.todo_count = 0;
     }

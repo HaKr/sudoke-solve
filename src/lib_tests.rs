@@ -1,18 +1,15 @@
 #[cfg(test)]
-use crate::{
-    sudoku::Sudoku, CellIterator, SudokuError, SudokuResult, GRID_COLUMNS, GRID_INDEX_MAX,
-    GRID_ROWS,
-};
-#[cfg(test)]
-use std::fmt::Arguments;
+use crate::{Sudoku, SudokuResult};
 
 #[cfg(test)]
 const GELDERLANDER_0308: &str = include_str!("../examples/gelderlander-20220308.txt");
+const HEURISTIC_2_1: &str = include_str!("../examples/heuristic_2_1.txt");
+const DAILY_TELEGRAPH: &str = include_str!("../examples/daily_telegraph.txt");
 
 #[cfg(test)]
 #[test]
-fn gelderlander_20220308() {
-    let sudoku = create_sudoku(GELDERLANDER_0308);
+fn gelderlander_20220308() -> SudokuResult {
+    let mut sudoku = create_sudoku(GELDERLANDER_0308);
     assert_eq!(sudoku.todo_count, 46, "Incorrect number of cells filled");
     let cell = sudoku.cell_at(3, 5);
     assert_eq!(cell.value, Some(9));
@@ -20,7 +17,34 @@ fn gelderlander_20220308() {
     assert_eq!(cell.todo_count, 2);
     let cell = sudoku.cell_at(8, 8);
     assert_eq!(cell.todo_count, 3);
+    let iterations = sudoku.solve()?;
+    assert_eq!(iterations, 46);
+    assert_eq!(sudoku.todo_count, 0);
+    Ok(())
 }
+
+#[cfg(test)]
+#[test]
+fn heuristic_2_1() -> SudokuResult {
+    let mut sudoku = create_sudoku(HEURISTIC_2_1);
+    let iterations = sudoku.solve()?;
+    assert_eq!(iterations, 2);
+    assert_eq!(sudoku.todo_count, 38);
+    println!("Heuristic_2: {}", sudoku);
+    Ok(())
+}
+
+#[cfg(test)]
+#[test]
+fn daily_telegraph() -> SudokuResult {
+    let mut sudoku = create_sudoku(DAILY_TELEGRAPH);
+    let iterations = sudoku.solve()?;
+    assert_eq!(iterations, 2);
+    assert_eq!(sudoku.todo_count, 55);
+    println!("Daily Telegraph: {}", sudoku);
+    Ok(())
+}
+/*
 
 #[cfg(test)]
 #[test]
@@ -108,6 +132,7 @@ fn assert_indices_eq(
 
     assert_eq!(realised_indices, expected_indices, "{}", msg);
 }
+*/
 
 #[cfg(test)]
 fn create_sudoku(text: &str) -> Sudoku {

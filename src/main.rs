@@ -23,6 +23,6 @@ fn main() -> Result<(), SudokuError> {
 
     let count = puzzle.solve()?;
 
-    println!("Solved in {} iterations\n{}", count, puzzle);
+    // println!("Solved in {} iterations\n{}", count, puzzle);
     Ok(())
 }
